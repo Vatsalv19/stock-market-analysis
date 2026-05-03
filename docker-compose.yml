@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+
+  # ── Service 1: Stock Data Service ──────────────────
+  stock-service:
+    build: ./stock-service        # look for Dockerfile here
+    ports:
+      - "8000:8000"               # Windows:Container
+    networks:
+      - stock-network             # join this shared network
+    restart: unless-stopped       # auto restart if crashes
+
+  # ── Service 2: News Service ─────────────────────────
+  news-service:
+    build: ./news-service
+    ports:
+      - "8001:8001"
+    networks:
+      - stock-network
+    restart: unless-stopped
+
+# ── Shared Network ───────────────────────────────────
+# All services on this network can talk to each other
+# using service NAME as hostname (not IP address!)
+networks:
+  stock-network:
+    driver: bridge
