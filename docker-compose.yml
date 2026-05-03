@@ -1,28 +1,45 @@
-version: '3.9'
-
 services:
 
-  # ── Service 1: Stock Data Service ──────────────────
   stock-service:
-    build: ./stock-service        # look for Dockerfile here
+    build: ./stock-service
     ports:
-      - "8000:8000"               # Windows:Container
+      - "8000:8000"
     networks:
-      - stock-network             # join this shared network
-    restart: unless-stopped       # auto restart if crashes
+      - stock-network
+    depends_on:
+      - redis                   # ← wait for Redis to start first
+    environment:
+      - REDIS_HOST=redis        # ← pass Redis hostname as env variable
+      - REDIS_PORT=6379
+    restart: unless-stopped
 
-  # ── Service 2: News Service ─────────────────────────
   news-service:
     build: ./news-service
     ports:
       - "8001:8001"
     networks:
       - stock-network
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     restart: unless-stopped
 
-# ── Shared Network ───────────────────────────────────
-# All services on this network can talk to each other
-# using service NAME as hostname (not IP address!)
+  # ── Redis Service ─────────────────────────────────
+  redis:
+    image: redis:7-alpine        # official Redis image, alpine = tiny size
+    ports:
+      - "6379:6379"              # expose Redis port
+    networks:
+      - stock-network
+    volumes:
+      - redis-data:/data         # persist data even if container restarts
+    restart: unless-stopped
+
 networks:
   stock-network:
     driver: bridge
+
+volumes:
+  redis-data:                    # named volume for Redis persistence
