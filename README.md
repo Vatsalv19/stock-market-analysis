@@ -323,12 +323,4 @@ curl http://localhost:8002/sentiment/AAPL
 
 ***
 
-## 📄 License
 
-MIT License — see [LICENSE](LICENSE) for details.
-
-***
-
-## 👨‍💻 Author
-
-Built as a full-stack microservices project demonstrating Docker, FastAPI, React, Redis, and AI/ML integration.
