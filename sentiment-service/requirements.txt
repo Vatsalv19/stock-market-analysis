@@ -1,5 +1,6 @@
 fastapi==0.115.0
 uvicorn==0.30.6
+transformers==4.40.0
+torch==2.2.2
 yfinance==0.2.50
 requests==2.32.3
-redis==5.0.1
